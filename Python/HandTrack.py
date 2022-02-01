@@ -4,34 +4,58 @@ import mediapipe as mpp
 import serial
 import cv2
 
-SEND_DATA = False
+##Serial
+SERIAL_ENABLED = False
+SERIAL_PORT = 'COM7'
+if SERIAL_ENABLED : serialPort = serial.Serial(port=SERIAL_PORT, baudrate=9600, timeout=1, parity=serial.PARITY_EVEN, stopbits=1)
 
-cam = cv2.VideoCapture(0)
-serialPort = serial.Serial(port='COM7', baudrate=9600, timeout=1, parity=serial.PARITY_EVEN, stopbits=1)
+## Solutions
 mpHands = mpp.solutions.hands
 mpDraw = mpp.solutions.drawing_utils
-hands = mpHands.Hands()
+
+##Define
+lms = mpHands.HandLandmark #-Landmark List
+hand_model = mpHands.Hands() #-Model
+cam = cv2.VideoCapture(0) #-Camera
+
+##Method
+def NormalVector(name,wrist,hand):
+    landmarks = hand.landmark[name]
+    AbsoluteVector = sqrt(
+        (landmarks.x - wrist.x)**2 
+        + (landmarks.y - wrist.y)**2 
+        + (landmarks.z - wrist.z)**2
+        )
+    return int((AbsoluteVector/0.2)*9)
 
 while True:
+    #-generating image
     checker,img = cam.read()
     imgRGB = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
 
-    result = hands.process(imgRGB)
-    if result.multi_hand_world_landmarks:
-        for handlm in result.multi_hand_world_landmarks:
-            # mpDraw.draw_landmarks(img, handlm)
-            wrist = handlm.landmark[mpHands.HandLandmark.WRIST]
+    #-processing
+    result = hand_model.process(imgRGB)
+    if result.multi_hand_landmarks:
+        for i in range(len(result.multi_hand_landmarks)):
+            #-2D
+            mpDraw.draw_landmarks(
+            img,
+            result.multi_hand_landmarks[i],
+            mpHands.HAND_CONNECTIONS,)
 
-            indexF = handlm.landmark[mpHands.HandLandmark.INDEX_FINGER_TIP]
-            indexAbsoluteVector = sqrt((indexF.x - wrist.x)**2 + (indexF.y - wrist.y)**2 + (indexF.z - wrist.z)**2)
-            indexNormalVector = int((indexAbsoluteVector/0.2)*9)
+            #-3D
+            hand = result.multi_hand_world_landmarks[i]
 
-            midF = handlm.landmark[mpHands.HandLandmark.MIDDLE_FINGER_TIP]
-            midAbsoluteVector = sqrt((midF.x - wrist.x)**2 + (midF.y - wrist.y)**2 + (midF.z - wrist.z)**2)
-            midNormalVector = int((midAbsoluteVector/0.2)*9)
+            #-Wrist (Mid Point)
+            wrist = hand.landmark[lms.WRIST]
 
-            if SEND_DATA: serialPort.write(str(indexNormalVector).encode())
+            #-Fingers
+            indexVector = NormalVector(lms.INDEX_FINGER_TIP,wrist,hand)
+            middleVector = NormalVector(lms.MIDDLE_FINGER_TIP,wrist,hand)
 
+            #-Serial
+            if True: 
+                print(f'{result.multi_handedness[i].classification[0].label[0]},{indexVector},{middleVector}')
 
     cv2.imshow('ResultHand',img)
     if(cv2.waitKey(1) & 0xFF == ord('q')):
@@ -40,3 +64,4 @@ while True:
 
 cam.release()
 cv2.destroyAllWindows()
+
