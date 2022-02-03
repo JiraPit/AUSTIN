@@ -1,6 +1,6 @@
-from math import sqrt
+import sub.LocalFunction as lFunc
 from time import sleep
-import mediapipe as mpp
+import mediapipe as mp
 import serial
 import cv2
 
@@ -10,23 +10,13 @@ SERIAL_PORT = 'COM7'
 if SERIAL_ENABLED : serialPort = serial.Serial(port=SERIAL_PORT, baudrate=9600, timeout=1, parity=serial.PARITY_EVEN, stopbits=1)
 
 ## Solutions
-mpHands = mpp.solutions.hands
-mpDraw = mpp.solutions.drawing_utils
+mpHands = mp.solutions.hands
+mpDraw = mp.solutions.drawing_utils
 
 ##Define
-lms = mpHands.HandLandmark #-Landmark List
+parts = mpHands.HandLandmark #-Landmark List
 hand_model = mpHands.Hands() #-Model
 cam = cv2.VideoCapture(0) #-Camera
-
-##Method
-def NormalVector(name,wrist,hand):
-    landmarks = hand.landmark[name]
-    AbsoluteVector = sqrt(
-        (landmarks.x - wrist.x)**2 
-        + (landmarks.y - wrist.y)**2 
-        + (landmarks.z - wrist.z)**2
-        )
-    return int((AbsoluteVector/0.2)*9)
 
 while True:
     #-generating image
@@ -42,20 +32,24 @@ while True:
             img,
             result.multi_hand_landmarks[i],
             mpHands.HAND_CONNECTIONS,)
-
             #-3D
             hand = result.multi_hand_world_landmarks[i]
-
             #-Wrist (Mid Point)
-            wrist = hand.landmark[lms.WRIST]
-
+            wrist = hand.landmark[parts.WRIST]
             #-Fingers
-            indexVector = NormalVector(lms.INDEX_FINGER_TIP,wrist,hand)
-            middleVector = NormalVector(lms.MIDDLE_FINGER_TIP,wrist,hand)
-
+            FingerVectors = {
+                'thumbVector'   :   lFunc.normalize_vector(parts.THUMB_TIP,wrist,hand,0.15),
+                'indexVector'   :   lFunc.normalize_vector(parts.INDEX_FINGER_TIP,wrist,hand,0.2),
+                'middleVector'  :   lFunc.normalize_vector(parts.MIDDLE_FINGER_TIP,wrist,hand,0.2),
+                'ringVector'    :   lFunc.normalize_vector(parts.RING_FINGER_TIP,wrist,hand,0.2),
+                'pinkyVector'   :   lFunc.normalize_vector(parts.PINKY_TIP,wrist,hand,0.2),
+            }
+            #-Orientation
+            orientation = lFunc.orientaion(hand,parts,0.06)
             #-Serial
             if True: 
-                print(f'{result.multi_handedness[i].classification[0].label[0]},{indexVector},{middleVector}')
+                data = f'{result.multi_handedness[i].classification[0].label[0]}{orientation}{"".join(list(FingerVectors.values()))}'
+                print(data)
 
     cv2.imshow('ResultHand',img)
     if(cv2.waitKey(1) & 0xFF == ord('q')):
