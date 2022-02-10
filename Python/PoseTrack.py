@@ -25,7 +25,7 @@ while True:
         print(
             lms[body.RIGHT_WRIST]
         )
-        # mpDraw.plot_landmarks(pose_result.pose_world_landmarks, mpPose.POSE_CONNECTIONS)
+        mpDraw.ploqqt_landmarks(pose_result.pose_world_landmarks, mpPose.POSE_CONNECTIONS)
 
     sleep(0.2)
     cv2.imshow('ResultPose',img)

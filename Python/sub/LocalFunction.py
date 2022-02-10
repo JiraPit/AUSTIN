@@ -17,5 +17,5 @@ def orientaion(hand,parts,threshold):
     pinky = hand.landmark[parts.PINKY_MCP]
     xDistance = pinky.x - index.x + threshold
     if xDistance<0: xDistance= 0
-    if xDistance>2*threshold: xDistance= 2*threshold
-    return str(round((xDistance/2*threshold)*9))
+    if xDistance>(2*threshold): xDistance= (2*threshold)
+    return str(round((xDistance/(2*threshold))*9))
