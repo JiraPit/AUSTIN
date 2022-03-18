@@ -7,23 +7,23 @@ int init_pos = 9;
 
 Servo thumb;
 int thumb_position = init_pos;
-int thumb_angles[9] = {140, 140, 140, 140, 110, 80, 50, 30, 30};
+int thumb_angles[9] = {140, 140, 140, 140, 110, 70, 30, 30, 30};
 
 Servo index;
 int index_position = init_pos;
-int index_angles[9] = {30, 30, 30, 50, 80, 110, 140, 170, 170};
+int index_angles[9] = {30, 30, 30, 50, 80, 120, 170, 170, 170};
 
 Servo middle;
 int middle_position = init_pos;
-int middle_angles[9] = {170, 170, 170, 150, 120, 80, 50, 20, 20};
+int middle_angles[9] = {170, 170, 170, 150, 120, 60, 30, 20, 20};
 
 Servo ring;
 int ring_position = init_pos;
-int ring_angles[9] = {50, 50, 50, 60, 100, 120, 140, 170, 170};
+int ring_angles[9] = {50, 50, 50, 60, 100, 130, 170, 170, 170};
 
 Servo pinky;
 int pinky_position = init_pos;
-int pinky_angles[9] = {50, 50, 50, 60, 80, 100, 120, 150, 150};
+int pinky_angles[9] = {50, 50, 50, 60, 80, 120, 150, 150, 150};
 
 void setup() {
   Bluetooth.begin(9600);
@@ -43,14 +43,17 @@ void setup() {
 
 }
 void loop() {
-  if (Serial.available() > 0) {
-    String rec = Serial.readString();
-    Serial.println(rec);
-    thumb_position = translate(thumb,rec[0],thumb_position,thumb_angles);
-    index_position = translate(index,rec[1],index_position,index_angles);
-    middle_position = translate(middle,rec[2],middle_position,middle_angles);
-    ring_position = translate(ring,rec[3],ring_position,ring_angles);
-    pinky_position = translate(pinky,rec[4],pinky_position,pinky_angles);
+  if (Bluetooth.available() > 0) {
+    String rec = Bluetooth.readStringUntil('$');
+    if (rec[0] == 'L') {
+      thumb_position = translate(thumb, rec[2], thumb_position, thumb_angles);
+      index_position = translate(index, rec[3], index_position, index_angles);
+      middle_position = translate(middle, rec[4], middle_position, middle_angles);
+      ring_position = translate(ring, rec[5], ring_position, ring_angles);
+      pinky_position = translate(pinky, rec[6], pinky_position, pinky_angles);
+      Serial.println("-----------------------------");
+    }
+
   }
 }
 
@@ -60,10 +63,10 @@ int translate(
   int _position,
   int _angles[9])
 {
-  if (abs(_position - (_rec - '0')) > 0) {
+  if (abs(_position - (_rec - '0')) > 1) {
     _position = (_rec - '0');
     Serial.println(_position);
-    _servo.write(_angles[_position-1]);
+    _servo.write(_angles[_position - 1]);
   }
   return _position;
 

@@ -48,10 +48,10 @@ while True:
             orientation = lFunc.orientaion(hand,parts,0.1)
             #-Serial
             if SERIAL_ENABLED: 
-                data = f'{result.multi_handedness[i].classification[0].label[0]}{orientation}{"".join(list(FingerVectors.values()))}'
+                data = f'{result.multi_handedness[i].classification[0].label[0]}{orientation}{"".join(list(FingerVectors.values()))}$'
                 print(data)
                 serialPort.write(data.encode())
-                sleep(1)
+                sleep(0.25)
 
     cv2.imshow('ResultHand',img)
     if(cv2.waitKey(1) & 0xFF == ord('q')):
