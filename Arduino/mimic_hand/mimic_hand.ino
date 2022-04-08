@@ -26,15 +26,16 @@ int pinky_position = init_pos;
 int pinky_angles[9] = {50, 50, 50, 60, 80, 120, 150, 150, 150};
 
 void setup() {
+  //-Communication
   Bluetooth.begin(9600);
   Serial.begin(115200);
-
+  //-Init Servos
   thumb.attach(3);
   index.attach(4);
   middle.attach(5);
   ring.attach(6);
   pinky.attach(7);
-
+  //-Init position
   thumb.write(thumb_angles[thumb_position - 1]);
   index.write(index_angles[index_position - 1]);
   middle.write(middle_angles[middle_position - 1]);
@@ -51,7 +52,7 @@ void loop() {
       middle_position = translate(middle, rec[4], middle_position, middle_angles);
       ring_position = translate(ring, rec[5], ring_position, ring_angles);
       pinky_position = translate(pinky, rec[6], pinky_position, pinky_angles);
-      Serial.println("-----------------------------");
+      // Serial.println("-----------------------------");
     }
 
   }
@@ -65,7 +66,7 @@ int translate(
 {
   if (abs(_position - (_rec - '0')) > 1) {
     _position = (_rec - '0');
-    Serial.println(_position);
+    // Serial.println(_position);
     _servo.write(_angles[_position - 1]);
   }
   return _position;
