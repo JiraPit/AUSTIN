@@ -1,13 +1,11 @@
 #include <Servo.h>
 
 Servo myservo;
-Servo myservo2;
 
 int pos = 0; 
 
 void setup() {
-  myservo.attach(7); 
-//  myservo2.attach(10);
+  myservo.attach(7);
 }
 
 void loop() {
