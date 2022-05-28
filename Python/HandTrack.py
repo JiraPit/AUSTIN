@@ -1,4 +1,4 @@
-import sub.LocalFunction as lFunc
+import local_utils.VectorUtils as vUtils
 from time import sleep
 import mediapipe as mp
 import serial
@@ -38,14 +38,14 @@ while True:
             wrist = hand.landmark[parts.WRIST]
             #-Fingers
             FingerVectors = {
-                'thumbVector'   :   lFunc.normalize_vector(parts.THUMB_TIP,hand.landmark[parts.PINKY_MCP],hand,0.15),
-                'indexVector'   :   lFunc.normalize_vector(parts.INDEX_FINGER_TIP,wrist,hand,0.2),
-                'middleVector'  :   lFunc.normalize_vector(parts.MIDDLE_FINGER_TIP,wrist,hand,0.2),
-                'ringVector'    :   lFunc.normalize_vector(parts.RING_FINGER_TIP,wrist,hand,0.2),
-                'pinkyVector'   :   lFunc.normalize_vector(parts.PINKY_TIP,wrist,hand,0.2),
+                'thumbVector'   :   vUtils.normalize_vector(parts.THUMB_TIP,hand.landmark[parts.PINKY_MCP],hand,0.15),
+                'indexVector'   :   vUtils.normalize_vector(parts.INDEX_FINGER_TIP,wrist,hand,0.2),
+                'middleVector'  :   vUtils.normalize_vector(parts.MIDDLE_FINGER_TIP,wrist,hand,0.2),
+                'ringVector'    :   vUtils.normalize_vector(parts.RING_FINGER_TIP,wrist,hand,0.2),
+                'pinkyVector'   :   vUtils.normalize_vector(parts.PINKY_TIP,wrist,hand,0.2),
             }
             #-Orientation
-            orientation = lFunc.orientaion(hand,parts,0.1)
+            orientation = vUtils.orientaion(hand,0.1)
             #-Serial
             if SERIAL_ENABLED: 
                 data = f'{result.multi_handedness[i].classification[0].label[0]}{orientation}{"".join(list(FingerVectors.values()))}$'
