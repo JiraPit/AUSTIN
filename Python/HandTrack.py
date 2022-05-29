@@ -9,22 +9,20 @@ SERIAL_ENABLED = True
 SERIAL_PORT = 'COM7'
 if SERIAL_ENABLED : serialPort = serial.Serial(port=SERIAL_PORT, baudrate=115200, timeout=1, parity=serial.PARITY_EVEN, stopbits=1)
 
-## Solutions
+##Define
 mpHands = mp.solutions.hands
 mpDraw = mp.solutions.drawing_utils
-
-##Define
-parts = mpHands.HandLandmark #-Landmark List
-hand_model = mpHands.Hands() #-Model
-cam = cv2.VideoCapture(0) #-Camera
+parts = mpHands.HandLandmark
+HAND_MODEL = mpHands.Hands()
+CAM = cv2.VideoCapture(0)
 
 while True:
     #-generating image
-    checker,img = cam.read()
+    checker,img = CAM.read()
     imgRGB = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
 
     #-processing
-    result = hand_model.process(imgRGB)
+    result = HAND_MODEL.process(imgRGB)
     if result.multi_hand_landmarks:
         for i in range(len(result.multi_hand_landmarks)):
             #-2D
@@ -38,11 +36,11 @@ while True:
             wrist = hand.landmark[parts.WRIST]
             #-Fingers
             FingerVectors = {
-                'thumbVector'   :   vUtils.normalize_vector(parts.THUMB_TIP,hand.landmark[parts.PINKY_MCP],hand,0.15),
-                'indexVector'   :   vUtils.normalize_vector(parts.INDEX_FINGER_TIP,wrist,hand,0.2),
-                'middleVector'  :   vUtils.normalize_vector(parts.MIDDLE_FINGER_TIP,wrist,hand,0.2),
-                'ringVector'    :   vUtils.normalize_vector(parts.RING_FINGER_TIP,wrist,hand,0.2),
-                'pinkyVector'   :   vUtils.normalize_vector(parts.PINKY_TIP,wrist,hand,0.2),
+                'thumbVector'   :   vUtils.normalized_absolute_vector(parts.THUMB_TIP,hand.landmark[parts.PINKY_MCP],hand,0.15),
+                'indexVector'   :   vUtils.normalized_absolute_vector(parts.INDEX_FINGER_TIP,wrist,hand,0.2),
+                'middleVector'  :   vUtils.normalized_absolute_vector(parts.MIDDLE_FINGER_TIP,wrist,hand,0.2),
+                'ringVector'    :   vUtils.normalized_absolute_vector(parts.RING_FINGER_TIP,wrist,hand,0.2),
+                'pinkyVector'   :   vUtils.normalized_absolute_vector(parts.PINKY_TIP,wrist,hand,0.2),
             }
             #-Orientation
             orientation = vUtils.orientaion(hand,0.1)
@@ -58,6 +56,6 @@ while True:
         break
     # sleep(0.33)
 
-cam.release()
+CAM.release()
 cv2.destroyAllWindows()
 

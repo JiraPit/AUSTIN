@@ -4,8 +4,13 @@ import mediapipe as mp
 
 HAND_PARTS = mp.solutions.hands.HandLandmark
 
+##Fake 3d landmarks
+class LM:
+    def __init__(self, x, y,z):
+        self.x=x;self.y=y;self.z=z
+
 ##Calculate distance and normalize to 1-9
-def normalize_vector(name:int,ref_point,hand,max:float) -> str:
+def normalized_absolute_vector(name:int,ref_point,hand,max:float) -> str:
     landmarks = hand.landmark[name]
     AbsoluteVector = sqrt(
         (landmarks.x - ref_point.x)**2 
@@ -23,12 +28,11 @@ def orientaion(hand,threshold:float) -> str:
     if xDistance>(2*threshold): xDistance= (2*threshold)
     return str(round((xDistance/(2*threshold))*9))
 
+##Find angle between two vectors
 def find_seta(init,mid,final) -> float:
     v1 = np.array([mid.x,mid.y,mid.z]) - np.array([init.x,init.y,init.z])
-    v2 = np.array([final.x,final.y,final.z]) - np.array([mid.x,mid.y,mid.z])
-    print(v1)
-    print(v2)
-    seta = acos(abs(np.dot(v1, v2))/np.linalg.norm(v1)/np.linalg.norm(v2))
+    v2 = np.array([mid.x,mid.y,mid.z]) - np.array([final.x,final.y,final.z]) 
+    seta = acos(np.dot(v1, v2)/np.linalg.norm(v1)/np.linalg.norm(v2))
     seta = np.degrees(seta)
     return seta
 
