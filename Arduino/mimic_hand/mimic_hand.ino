@@ -52,7 +52,7 @@ void loop() {
       middle_position = translate(middle, rec[4], middle_position, middle_angles);
       ring_position = translate(ring, rec[5], ring_position, ring_angles);
       pinky_position = translate(pinky, rec[6], pinky_position, pinky_angles);
-       Serial.println("-----------------------------");q
+       Serial.println("-----------------------------");
     }
 
   }
@@ -64,7 +64,7 @@ int translate(
   int _position,
   int _angles[9])
 {
-  if (abs(_position - (_rec - '0')) > 1) {
+  if (abs(_position - (_rec - '0')) > 0) {
     _position = (_rec - '0');
      Serial.println(_position);
     _servo.write(_angles[_position - 1]);

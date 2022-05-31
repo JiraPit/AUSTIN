@@ -1,13 +1,13 @@
 import local_utils.VectorUtils as vUtils
+import local_utils.SerialCommunication as scu
 from time import sleep
 import mediapipe as mp
-import serial
+
 import cv2
 
 ##Serial
 SERIAL_ENABLED = True
-SERIAL_PORT = 'COM7'
-if SERIAL_ENABLED : serialPort = serial.Serial(port=SERIAL_PORT, baudrate=115200, timeout=1, parity=serial.PARITY_EVEN, stopbits=1)
+if SERIAL_ENABLED : serialPort = scu.get_port()
 
 ##Define
 mpHands = mp.solutions.hands
