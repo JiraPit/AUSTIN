@@ -44,11 +44,35 @@ while True:
             mid=lms[body.LEFT_ELBOW],
             final=lms[body.LEFT_SHOULDER],
         )
-        
+        #Shoulder
+        RZShoulder= vUtils.find_seta(
+            init=lms[body.RIGHT_HIP],
+            mid=lms[body.RIGHT_SHOULDER],
+            final=lms[body.RIGHT_ELBOW],
+        )
+        LZShoulder = vUtils.find_seta(
+            init=lms[body.LEFT_HIP],
+            mid=lms[body.LEFT_SHOULDER],
+            final=lms[body.LEFT_ELBOW],
+        )
+        RXShoulder= vUtils.find_seta(
+            init=lms[body.RIGHT_ELBOW],
+            mid=lms[body.RIGHT_SHOULDER],
+            final=lms[body.LEFT_SHOULDER],
+        )
+        LXShoulder= vUtils.find_seta(
+            init=lms[body.LEFT_ELBOW],
+            mid=lms[body.LEFT_SHOULDER],
+            final=lms[body.RIGHT_SHOULDER],
+        )
         #-Serial
         data = f'''
-            re{RZElbow}
-            le{LZElbow}
+            rze{RZElbow}
+            lze{LZElbow}
+            rzs{RZShoulder}
+            lzs{LZShoulder}
+            rxs{RXShoulder}
+            lxs{LXShoulder}
             $'''
         print(data)
         if SERIAL_ENABLED: 
