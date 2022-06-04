@@ -1,14 +1,17 @@
 from time import sleep
 import mediapipe as mp
-import serial
 from mediapipe.python.solutions.pose import PoseLandmark as body
-import local_utils.VectorUtils as vUtils
+import mimic_robot_utils.VectorUtils as vu
+import mimic_robot_utils.SerialCommunication as scu
 import cv2
 
-##Serial
+##Serial0
 SERIAL_ENABLED = False
-SERIAL_PORT = 'COM7'
-if SERIAL_ENABLED : serialPort = serial.Serial(port=SERIAL_PORT, baudrate=115200, timeout=1, parity=serial.PARITY_EVEN, stopbits=1)
+if SERIAL_ENABLED : serialPort = scu.get_port()
+
+##Visualize
+DRAW = True
+PLOT = False
 
 ##Define
 CAM = cv2.VideoCapture(0)
@@ -24,62 +27,61 @@ while True:
     pose_result = pose.process(imgRGB)
     
     if pose_result.pose_world_landmarks:
-        #- Draw
-        mpDraw.draw_landmarks(
-                    img,
-                    pose_result.pose_landmarks,
-                    mpPose.POSE_CONNECTIONS
-                    )
+        #- Visualize
+        if DRAW:
+            mpDraw.draw_landmarks(
+                        img,
+                        pose_result.pose_landmarks,
+                        mpPose.POSE_CONNECTIONS
+                        )
+        if PLOT:
+            mpDraw.plot_landmarks(pose_result.pose_world_landmarks, mpPose.POSE_CONNECTIONS)
         #- Get Landmarks
-        lms = pose_result.pose_world_landmarks.landmark
+        lms3 = pose_result.pose_world_landmarks.landmark
+        lms2 = pose_result.pose_landmarks.landmark
         #-Calculate Angles
         #Elbows
-        RZElbow = vUtils.find_seta(
-            init=lms[body.RIGHT_WRIST],
-            mid=lms[body.RIGHT_ELBOW],
-            final=lms[body.RIGHT_SHOULDER],
-        )
-        LZElbow = vUtils.find_seta(
-            init=lms[body.LEFT_WRIST],
-            mid=lms[body.LEFT_ELBOW],
-            final=lms[body.LEFT_SHOULDER],
-        )
+        RZElbow = vu.FindAngle(
+            init=lms3[body.RIGHT_WRIST],
+            mid=lms3[body.RIGHT_ELBOW],
+            final=lms3[body.RIGHT_SHOULDER],
+        ).around_ALL.normalized(70,170)
+        LZElbow = vu.FindAngle(
+            init=lms3[body.LEFT_WRIST],
+            mid=lms3[body.LEFT_ELBOW],
+            final=lms3[body.LEFT_SHOULDER],
+        ).around_ALL.normalized(70,170)
         #Shoulder
-        RZShoulder= vUtils.find_seta(
-            init=lms[body.RIGHT_HIP],
-            mid=lms[body.RIGHT_SHOULDER],
-            final=lms[body.RIGHT_ELBOW],
-        )
-        LZShoulder = vUtils.find_seta(
-            init=lms[body.LEFT_HIP],
-            mid=lms[body.LEFT_SHOULDER],
-            final=lms[body.LEFT_ELBOW],
-        )
-        RXShoulder= vUtils.find_seta(
-            init=lms[body.RIGHT_ELBOW],
-            mid=lms[body.RIGHT_SHOULDER],
-            final=lms[body.LEFT_SHOULDER],
-        )
-        LXShoulder= vUtils.find_seta(
-            init=lms[body.LEFT_ELBOW],
-            mid=lms[body.LEFT_SHOULDER],
-            final=lms[body.RIGHT_SHOULDER],
-        )
-        #-Serial
+        RZShoulder= vu.FindAngle(
+            init=lms3[body.RIGHT_HIP],
+            mid=lms3[body.RIGHT_SHOULDER],
+            final=lms3[body.RIGHT_ELBOW],
+        ).around_Z.seta
+        LZShoulder = vu.FindAngle(
+            init=lms3[body.LEFT_HIP],
+            mid=lms3[body.LEFT_SHOULDER],
+            final=lms3[body.LEFT_ELBOW],
+        ).around_Z.seta
+        RXShoulder= vu.FindAngle(
+            init=lms3[body.RIGHT_ELBOW],
+            mid=lms3[body.RIGHT_SHOULDER],
+            final=lms3[body.RIGHT_HIP],
+        ).around_X.seta
+        LXShoulder= vu.FindAngle(
+            init=lms3[body.LEFT_ELBOW],
+            mid=lms3[body.LEFT_SHOULDER],
+            final=lms3[body.LEFT_HIP],
+        ).around_X.seta
+        #-Prepare Data
         data = f'''
-            rze{RZElbow}
-            lze{LZElbow}
-            rzs{RZShoulder}
-            lzs{LZShoulder}
-            rxs{RXShoulder}
-            lxs{LXShoulder}
-            $'''
+        r,{RZElbow},{RZShoulder},{RXShoulder}$
+        l,{LZElbow},{LZShoulder},{LXShoulder}$
+        '''.replace("\n","")
         print(data)
+        #-Serial
         if SERIAL_ENABLED: 
-                serialPort.write(data.encode())
-                sleep(0.25)
-    
-    sleep(0.1)
+            serialPort.write(data.replace("\t","").replace(" ","").replace(",","").encode())
+    sleep(0.25)
     cv2.imshow('ResultPose',img)
     if(cv2.waitKey(1) & 0xFF == ord('q')):
         break

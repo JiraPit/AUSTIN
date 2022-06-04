@@ -1,12 +1,12 @@
-import local_utils.VectorUtils as vUtils
-import local_utils.SerialCommunication as scu
+import mimic_robot_utils.VectorUtils as vu
+import mimic_robot_utils.SerialCommunication as scu
 from time import sleep
 import mediapipe as mp
 
 import cv2
 
 ##Serial
-SERIAL_ENABLED = True
+SERIAL_ENABLED = False
 if SERIAL_ENABLED : serialPort = scu.get_port()
 
 ##Define
@@ -36,18 +36,18 @@ while True:
             wrist = hand.landmark[parts.WRIST]
             #-Fingers
             FingerVectors = {
-                'thumbVector'   :   vUtils.normalized_absolute_vector(parts.THUMB_TIP,hand.landmark[parts.PINKY_MCP],hand,0.15),
-                'indexVector'   :   vUtils.normalized_absolute_vector(parts.INDEX_FINGER_TIP,wrist,hand,0.2),
-                'middleVector'  :   vUtils.normalized_absolute_vector(parts.MIDDLE_FINGER_TIP,wrist,hand,0.2),
-                'ringVector'    :   vUtils.normalized_absolute_vector(parts.RING_FINGER_TIP,wrist,hand,0.2),
-                'pinkyVector'   :   vUtils.normalized_absolute_vector(parts.PINKY_TIP,wrist,hand,0.2),
+                'thumbVector'   :   vu.Hand(hand).normalized_absolute_vector(parts.THUMB_TIP,hand.landmark[parts.PINKY_MCP],0.15),
+                'indexVector'   :   vu.Hand(hand).normalized_absolute_vector(parts.INDEX_FINGER_TIP,wrist,0.2),
+                'middleVector'  :   vu.Hand(hand).normalized_absolute_vector(parts.MIDDLE_FINGER_TIP,wrist,0.2),
+                'ringVector'    :   vu.Hand(hand).normalized_absolute_vector(parts.RING_FINGER_TIP,wrist,0.2),
+                'pinkyVector'   :   vu.Hand(hand).normalized_absolute_vector(parts.PINKY_TIP,wrist,0.2),
             }
             #-Orientation
-            orientation = vUtils.orientaion(hand,0.1)
+            orientation = vu.Hand(hand).orientaion(0.1)
             #-Serial
+            data = f'{result.multi_handedness[i].classification[0].label[0]}{orientation}{"".join(list(FingerVectors.values()))}$'
+            print(data)
             if SERIAL_ENABLED: 
-                data = f'{result.multi_handedness[i].classification[0].label[0]}{orientation}{"".join(list(FingerVectors.values()))}$'
-                print(data)
                 serialPort.write(data.encode())
                 sleep(0.25)
 
