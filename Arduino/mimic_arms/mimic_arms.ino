@@ -2,8 +2,9 @@
 #include <SoftwareSerial.h>
 SoftwareSerial Bluetooth(D5, D6);
 
-const char side = 'r'
+const char side = 'r';
 const int init_pos = 9;
+
 Servo x_elbowS;
 int x_elbow_position = init_pos;
 int x_elbow_angles[9] = {110, 120, 130, 140, 150, 160, 170, 180, 180};
@@ -18,6 +19,7 @@ void setup() {
   
   //-Init position
   x_elbowS.write(x_elbow_angles[x_elbow_position-1]);
+}
 
 void loop() {
   if (Bluetooth.available() > 0) {
@@ -36,9 +38,9 @@ int translate(
   int _position,
   int _angles[9])
 {
-  if (abs(_position - (_rec - '0')) > 0) {
+  if (abs(_position - (_rec - '0')) > 1) {
     _position = (_rec - '0');
-//    servo.write(_angles[_position - 1]);
+    servo.write(_angles[_position - 1]);
     Serial.println(_position);
   }
   return _position;

@@ -6,7 +6,7 @@ import mimic_robot_utils.SerialCommunication as scu
 import cv2
 
 ##Serial0
-SERIAL_ENABLED = False
+SERIAL_ENABLED = True
 if SERIAL_ENABLED : serialPort = scu.get_port()
 
 ##Visualize
