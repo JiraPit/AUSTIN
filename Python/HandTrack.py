@@ -6,7 +6,7 @@ import mediapipe as mp
 import cv2
 
 ##Serial
-SERIAL_ENABLED = False
+SERIAL_ENABLED = True
 if SERIAL_ENABLED : serialPort = scu.get_port()
 
 ##Define
