@@ -1,4 +1,4 @@
- #include <Servo.h>
+#include <Servo.h>
 
 int init_pos = 9;
 char Buf[30];
@@ -73,7 +73,11 @@ int translate(
 {
   if (abs(_position - (_rec - '0')) > 0) {
     _position = (_rec - '0');
-    servo.write(_angles[_position - 1]);
+    int topos = _position - 1;
+    if (topos<0){
+      topos = 0;
+    }
+    servo.write(_angles[topos]);
     Serial.println(_position);
   }
   return _position;

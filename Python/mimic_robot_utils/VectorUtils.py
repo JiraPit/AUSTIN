@@ -29,13 +29,13 @@ class Hand:
         return str(round((AbsoluteVector/max)*9))
 
     ##Check hand orientation
-    def orientaion(self,threshold:float) -> str:
+    def orientaion(self,threshold:float) -> int:
         index = self.hand.landmark[HAND_PARTS.INDEX_FINGER_MCP]
         pinky = self.hand.landmark[HAND_PARTS.PINKY_MCP]
         xDistance = pinky.x - index.x + threshold
         if xDistance<0: xDistance= 0
         if xDistance>(2*threshold): xDistance= (2*threshold)
-        return str(round((xDistance/(2*threshold))*9))
+        return round((xDistance/(2*threshold))*9)
 
 ##Angle Object
 class Seta:
@@ -43,7 +43,7 @@ class Seta:
         self.__seta = round(np.degrees(seta))
     
     ##Normalize seta to 0-9
-    def normalized(self,min_value : int, max_value: int) -> int:
+    def normalized_seta(self,min_value : int, max_value: int) -> int:
         step = (max_value - min_value)/9
         checker_value = min_value
         checker_time = 0
@@ -60,7 +60,7 @@ class Seta:
 ##Find angle between two vectors
 class FindAngle:
 
-    def __init__(self,init,mid,final) -> None:
+    def __init__(self,init,final,mid) -> None:
         self.__init = init
         self.__mid = mid
         self.__final = final
@@ -85,5 +85,25 @@ class FindAngle:
         v2 = np.array([self.__mid.y,self.__mid.z]) - np.array([self.__final.y,self.__final.z]) 
         seta = acos(np.dot(v1, v2)/np.linalg.norm(v1)/np.linalg.norm(v2))
         return Seta(seta)
+
+    @property
+    def around_Y(self) -> Seta:
+        v1 = np.array([self.__mid.x,self.__mid.z]) - np.array([self.__init.x,self.__init.z])
+        v2 = np.array([self.__mid.x,self.__mid.z]) - np.array([self.__final.x,self.__final.z]) 
+        seta = acos(np.dot(v1, v2)/np.linalg.norm(v1)/np.linalg.norm(v2))
+        return Seta(seta)
+
+    def by_distance(self,absolue_max,to_positive) -> int:
+        xDistance = self.__init.x - self.__final.x
+        normalized_distance = round((abs(xDistance)/absolue_max)*(xDistance/abs(xDistance))*10)
+        if normalized_distance > 9:
+            normalized_distance = 9
+        if normalized_distance < -9:
+            normalized_distance = -9
+        if to_positive:
+            normalized_distance = round((normalized_distance +9 )/2)
+        return normalized_distance
+
+
 
 
