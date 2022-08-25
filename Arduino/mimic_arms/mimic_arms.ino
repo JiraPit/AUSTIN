@@ -3,6 +3,7 @@
 
 SoftwareSerial Bluetooth(D6, D7);
 SoftwareSerial Hand(D4, D5);
+char Buf[30];
 
 int translate(
   Servo& servo,
@@ -13,16 +14,17 @@ int translate(
 {
   if (*_charge == (_rec - '0')) {
     _position = (_rec - '0');
-    servo.write(_angles[_position - 1]);
-    Serial.print("Move To");
+    servo.write(_angles[_position]);
+    Serial.print("Move To ");
     Serial.println(_position);
   } else {
     *_charge = (_rec - '0');
-    Serial.print("Charge to");
+    Serial.print(" Charge to");
     Serial.println(*_charge);
   }
   return _position;
 }
+
 const char part = 'a';
 const char handPart = 'h';
 const int init_pos = 10;
@@ -41,7 +43,7 @@ Servo y_shoulderS;
 int y_shoulder_position = init_pos;
 int y_shoulder_charge = 69;
 int y_shoulder_angles[10] = {140, 130, 120, 100, 80, 60, 40, 20, 0, 0};
-
+  
 void setup() {
   //-Communication
   Bluetooth.begin(9600);
@@ -64,11 +66,14 @@ void loop() {
     String rec = Bluetooth.readStringUntil('$');
     //    Serial.println(rec);
     if (rec[0] == part) {
-//      a_elbow_position = translate(a_elbowS, rec[1], a_elbow_position, a_elbow_angles, &a_elbow_charge);
+      a_elbow_position = translate(a_elbowS, rec[1], a_elbow_position, a_elbow_angles, &a_elbow_charge);
       //      z_shoulder_position = translate(z_shoulderS, rec[1], z_shoulder_position, z_shoulder_angles, &z_shoulder_charge);
       y_shoulder_position = translate(y_shoulderS, rec[3], y_shoulder_position, y_shoulder_angles, &y_shoulder_charge);
     } else if (rec[0] == handPart) {
-      Hand.println(rec);
+      rec.toCharArray(Buf,30);                                                                                                                                                                                                                                                                                                                                                                                                                                     
+      Hand.write(Buf,30);
+      Serial.print("send to Hand");
+      Serial.println(rec);
     }
   }
 }

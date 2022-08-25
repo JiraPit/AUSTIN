@@ -2,6 +2,7 @@
 
 int init_pos = 9;
 char Buf[30];
+char part = 'h';
 
 Servo thumbS;
 Servo palmS;
@@ -26,6 +27,9 @@ Servo pinkyS;
 int pinky_position = init_pos;
 int pinky_angles[9] = {30, 30, 40, 60, 80, 120, 130, 140, 140};
 
+Servo rotationS;
+int rotation_position = init_pos;
+int rotation_angles[9] = {30, 30, 40, 60, 80, 120, 130, 140, 140};
 
 void setup() {
   //-Communication
@@ -38,6 +42,7 @@ void setup() {
   ringS.attach(D3,500,2400);
   pinkyS.attach(D4,500,2400);
   palmS.attach(D5,500,2400);
+  rotationS.attach(D7,500,2400);
   
   //-Init position
   thumbS.write(thumb_angles[thumb_position-1]);
@@ -46,20 +51,23 @@ void setup() {
   ringS.write(ring_angles[ring_position-1]);
   pinkyS.write(pinky_angles[pinky_position-1]);
   palmS.write(palm_angles[palm_position-1]);
+  rotationS.write(rotation_angles[rotation_position-1]);
 
 }
 void loop() {
   if (Serial.available() > 0) {
     Serial.readBytes(Buf,30);
-    String rec = String(Buf).substring(String(Buf).indexOf('#')+1);
+    String rec = String(Buf);
     Serial.println(rec);
-    if (rec[0] == 'L') {
+    if (rec[0] == part) {
       thumb_position = translate(thumbS, rec[2], thumb_position, thumb_angles);
       palm_position = translate(palmS, rec[2], palm_position, palm_angles);
       index_position = translate(indexS, rec[3], index_position, index_angles);
       middle_position = translate(middleS, rec[4], middle_position, middle_angles);
       ring_position = translate(ringS, rec[5], ring_position, ring_angles);
       pinky_position = translate(pinkyS, rec[6], pinky_position, pinky_angles);
+      rotation_position = translate(rotationS, rec[1], rotation_position, rotation_angles);
+//      Serial.println(rotation_position,thumb_position,palm_position,index_position,middle_position,ring_position,pinky_position)
       Serial.println("-----------------------------");
     }
   }
@@ -78,7 +86,6 @@ int translate(
       topos = 0;
     }
     servo.write(_angles[topos]);
-    Serial.println(_position);
   }
   return _position;
 }

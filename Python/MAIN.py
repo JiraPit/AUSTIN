@@ -106,9 +106,9 @@ while True:
 
             #-Prepare Data
             if (str(hand_result.multi_handedness[i].classification[0].label[0]) == "R"):
-                r_hand_data = f'h{orientation}{"".join(list(FingerVectors.values()))}$'
+                l_hand_data = f'h{orientation}{"".join(list(FingerVectors.values()))}$'
             elif (str(hand_result.multi_handedness[i].classification[0].label[0]) == "L"):
-                l_hand_data = f'h{abs(9-orientation)}{"".join(list(FingerVectors.values()))}$'
+                r_hand_data = f'h{abs(9-orientation)}{"".join(list(FingerVectors.values()))}$'
 
     print(
         r_hand_data,
@@ -125,7 +125,7 @@ while True:
         #         R_PORT.write(bytes(r_hand_data.replace("\n","").replace("\t","").replace(" ","").replace(",",""),'UTF-8'))
         #     if r_arm_data != None:
         #         R_PORT.write(bytes(r_arm_data.replace("\n","").replace("\t","").replace(" ","").replace(",",""),'UTF-8'))
-        # #-L
+        #-L
         if L_PORT != None:
             if l_hand_data != None:
                 L_PORT.write(bytes(l_hand_data.replace("\n","").replace("\t","").replace(" ","").replace(",",""),'UTF-8'))

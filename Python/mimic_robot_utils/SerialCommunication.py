@@ -1,6 +1,6 @@
 import serial
 
-SERIAL_PORT_R = "COM4"
+SERIAL_PORT_R = "COM13"
 SERIAL_PORT_L = "COM5"
 
 def get_port() -> tuple[serial.Serial,serial.Serial]:
