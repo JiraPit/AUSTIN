@@ -6,7 +6,7 @@ int pos2 = 0;
 int from_pos,to_pos = 0;
 void setup() {
   Serial.begin(115200);
-  myservo1.attach(D2, 500, 2400);
+  myservo1.attach(D5, 500, 2400);
 }
 
 void loop() {

@@ -29,7 +29,7 @@ int pinky_angles[9] = {30, 30, 40, 60, 80, 120, 130, 140, 140};
 
 Servo rotationS;
 int rotation_position = init_pos;
-int rotation_angles[9] = {30, 30, 40, 60, 80, 120, 130, 140, 140};
+int rotation_angles[9] = {0, 0, 20, 40, 60, 80, 100, 120, 140};
 
 void setup() {
   //-Communication
@@ -41,8 +41,8 @@ void setup() {
   middleS.attach(D2,500,2400);
   ringS.attach(D3,500,2400);
   pinkyS.attach(D4,500,2400);
-  palmS.attach(D5,500,2400);
-  rotationS.attach(D7,500,2400);
+  palmS.attach(D6,500,2400);
+  rotationS.attach(D5,500,2400);
   
   //-Init position
   thumbS.write(thumb_angles[thumb_position-1]);
@@ -79,7 +79,7 @@ int translate(
   int _position,
   int _angles[9])
 {
-  if (abs(_position - (_rec - '0')) > 0) {
+  if ((_rec - '0') != _position) {
     _position = (_rec - '0');
     int topos = _position - 1;
     if (topos<0){
