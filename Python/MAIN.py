@@ -120,17 +120,17 @@ while True:
     #-Serial
     if SERIAL_ENABLED: 
         #-R
-        # if R_PORT != None:
-        #     if r_hand_data != None:
-        #         R_PORT.write(bytes(r_hand_data.replace("\n","").replace("\t","").replace(" ","").replace(",",""),'UTF-8'))
-        #     if r_arm_data != None:
-        #         R_PORT.write(bytes(r_arm_data.replace("\n","").replace("\t","").replace(" ","").replace(",",""),'UTF-8'))
+        if R_PORT != None:
+            if r_hand_data != None:
+                R_PORT.write(bytes(r_hand_data.replace("\n","").replace("\t","").replace(" ","").replace(",",""),'UTF-8'))
+            if r_arm_data != None:
+                R_PORT.write(bytes(r_arm_data.replace("\n","").replace("\t","").replace(" ","").replace(",",""),'UTF-8'))
         #-L
-        if L_PORT != None:
-            if l_hand_data != None:
-                L_PORT.write(bytes(l_hand_data.replace("\n","").replace("\t","").replace(" ","").replace(",",""),'UTF-8'))
-            if l_arm_data != None:
-                L_PORT.write(bytes(l_arm_data.replace("\n","").replace("\t","").replace(" ","").replace(",",""),'UTF-8'))
+        # if L_PORT != None:
+        #     if l_hand_data != None:
+        #         L_PORT.write(bytes(l_hand_data.replace("\n","").replace("\t","").replace(" ","").replace(",",""),'UTF-8'))
+        #     if l_arm_data != None:
+        #         L_PORT.write(bytes(l_arm_data.replace("\n","").replace("\t","").replace(" ","").replace(",",""),'UTF-8'))
 
         sleep(0.2)
     

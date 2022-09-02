@@ -1,0 +1,7 @@
+palm = D5 60 140
+thumb D0 50 130
+index D6 60 180
+mid D2 0 140
+ring D3 10 160
+pinky D4 20 180
+rotation D7 0 150
