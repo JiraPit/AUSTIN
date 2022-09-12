@@ -1,0 +1,2 @@
+aelbow D1 30 หุบ 170 กาง
+yshoulder D2 0 หุบ 150 กาง

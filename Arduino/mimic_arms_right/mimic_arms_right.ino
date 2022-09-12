@@ -32,17 +32,17 @@ const int init_pos = 10;
 Servo a_elbowS;
 int a_elbow_position = init_pos;
 int a_elbow_charge = 69;
-int a_elbow_angles[10] = {70, 80, 100, 120, 140, 150, 160, 170, 180, 180};
+int a_elbow_angles[10] = {30, 50, 60, 80, 100, 120, 140, 160, 170, 180};
 
 //Servo z_shoulderS;
 //int z_shoulder_position = init_pos;
-int z_shoulder_charge = 69;
+//int z_shoulder_charge = 69;
 //int z_shoulder_angles[10] = {110, 120, 130, 140, 150, 160, 170, 180, 180, 180};
 
 Servo y_shoulderS;
 int y_shoulder_position = init_pos;
 int y_shoulder_charge = 69;
-int y_shoulder_angles[10] = {140, 130, 120, 100, 80, 60, 40, 20, 0, 0};
+int y_shoulder_angles[10] = {0, 10, 30, 50, 70, 90, 110, 130, 140, 150};
   
 void setup() {
   //-Communication
