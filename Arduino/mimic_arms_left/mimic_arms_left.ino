@@ -42,7 +42,7 @@ int z_shoulder_charge = 69;
 Servo y_shoulderS;
 int y_shoulder_position = init_pos;
 int y_shoulder_charge = 69;
-int y_shoulder_angles[10] = {140, 130, 120, 100, 80, 60, 40, 20, 0, 0};
+int y_shoulder_angles[10] = {150, 140, 130, 120, 100, 80, 60, 40, 30, 20};
   
 void setup() {
   //-Communication

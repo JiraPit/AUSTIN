@@ -1,8 +1,8 @@
 #include <Servo.h>
 
 Servo myservo1;
-int pos1 = 0;
-int pos2 = 150;
+int pos1 = 80;
+int pos2 = 180;
 int from_pos,to_pos = 0;
 void setup() {
   Serial.begin(115200);

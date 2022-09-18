@@ -42,7 +42,7 @@ int a_elbow_angles[10] = {30, 50, 60, 80, 100, 120, 140, 160, 170, 180};
 Servo y_shoulderS;
 int y_shoulder_position = init_pos;
 int y_shoulder_charge = 69;
-int y_shoulder_angles[10] = {0, 10, 30, 50, 70, 90, 110, 130, 140, 150};
+int y_shoulder_angles[10] = {180, 170 , 160, 150, 140, 130, 110, 100, 90, 80};
   
 void setup() {
   //-Communication
