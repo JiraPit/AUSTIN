@@ -1,12 +1,12 @@
 #include <Servo.h>
 
 Servo myservo1;
-int pos1 = 80;
-int pos2 = 180;
+int pos1 = 70;
+int pos2 = 160;
 int from_pos,to_pos = 0;
 void setup() {
   Serial.begin(115200);
-  myservo1.attach(D2, 500, 2400);
+  myservo1.attach(D4, 500, 2400);
 }
 
 void loop() {

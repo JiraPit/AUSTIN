@@ -42,7 +42,7 @@ int a_elbow_angles[10] = {30, 50, 60, 80, 100, 120, 140, 160, 170, 180};
 Servo y_shoulderS;
 int y_shoulder_position = init_pos;
 int y_shoulder_charge = 69;
-int y_shoulder_angles[10] = {180, 170 , 160, 150, 140, 130, 110, 100, 90, 80};
+int y_shoulder_angles[10] = {160, 150 , 140, 130, 120, 110, 100, 90, 80, 70};
   
 void setup() {
   //-Communication
@@ -51,9 +51,9 @@ void setup() {
   Serial.begin(19200);
 
   //-Init Servos
-  a_elbowS.attach(D1, 500, 2400);
+  a_elbowS.attach(D2, 500, 2400);
   //  z_shoulderS.attach(D3,500,2400);
-  y_shoulderS.attach(D2, 500, 2400);
+  y_shoulderS.attach(D1, 500, 2400);
 
   //-Init position
   a_elbowS.write(a_elbow_angles[a_elbow_position - 1]);
