@@ -9,7 +9,7 @@ class SerialComm():
         self.baudrate = 9600
 
     @property
-    def get_port(self) -> tuple[serial.Serial,serial.Serial]:
+    def get_port(self):
         try:
             R = serial.Serial(port=self.PORT_R, baudrate=self.baudrate, timeout=1, parity=serial.PARITY_EVEN, stopbits=1)
         except:
